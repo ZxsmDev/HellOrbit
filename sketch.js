@@ -29,16 +29,13 @@ class GameManager {
     boss.health = newHealth;
 
     this.entityManager.entities[1] = boss;
-  }
+  } 
   resetGame() {
-    this.entityManager.entities[0].health = 100;
-    this.entityManager.entities[0].maxSpeed = 5;
+    this.entityManager.entities[0].health = this.entityManager.entities[0].maxHealth;
+    this.entityManager.entities[1].health = this.entityManager.entities[1].maxHealth;
     this.entityManager.entities[0].x = windowWidth / 2;
     this.entityManager.entities[0].y = windowHeight / 3 * 2;
-    this.entityManager.entities[1].health = 10000;
-    this.UpgradeManager.upgrades.forEach(upgrade => {
-      upgrade.cost = upgrade.initialCost;
-    });
+    this.UpgradeManager.credits > 10000 ? this.UpgradeManager.credits -= 10000 : this.UpgradeManager.credits = 0;
     this.bulletManager.bullets = [];
     loop();
   }
@@ -888,8 +885,8 @@ class Attack {
   constructor(Boss) {
     this.boss = Boss;
     this.attacks = [
-      { name: "Random", damage: 15, speed: 5, description: "Randomly fires bullets in all directions.", weight: 0.5 },
-      { name: "Straight", damage: 10, speed: 10, description: "Fires bullets directly at the player.", weight: 0.3 },
+      { name: "Random", damage: 10, speed: 5, description: "Randomly fires bullets in all directions.", weight: 0.5 },
+      { name: "Straight", damage: 5, speed: 10, description: "Fires bullets directly at the player.", weight: 0.3 },
       { name: "Wave", damage: 10, speed: 10, description: "Fires bullets in a wave pattern.", weight: 0.2 },
       { name: "Shield", damage: 0, speed: 5, description: "Fires bullets that hover around the boss.", weight: 0.05 },
       { name: "Spiral", damage: 5, speed: 2, description: "Fires bullets in a spiral pattern.", weight: 0.1 },
@@ -903,7 +900,7 @@ class Attack {
     const playerDistance = dist(this.boss.x + this.boss.size / 2, this.boss.y + this.boss.size / 2, gameManager.entityManager.entities[0].x, gameManager.entityManager.entities[0].y);
     if (gameManager.StateMachine.state === "playing") {
       const player = gameManager.entityManager.entities[0];
-      const isIdle = millis() - player.lastMoveTime > random(1000, 2500);
+      const isIdle = millis() - player.lastMoveTime > random(500, 1750);
       this.stationary = isIdle;
     } else {
       this.stationary = false;
